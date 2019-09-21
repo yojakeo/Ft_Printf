@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 18:55:54 by japarbs           #+#    #+#             */
-/*   Updated: 2019/08/22 11:52:16 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/09/20 17:54:48 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ int		ft_printf(const char *input, ...)
 	format->i = 0;
 	while (format->input[format->i])
 	{
-		non_varg_format(format, buff);
-		input_parser(format);
-		flag_check(format);
-		convert_input(format, buff);
+		if (!non_varg_format(format, buff))
+			return (-1);
+		if (!input_parser(format))
+			return (-1);
 	}
 	write(1, buff->stream, buff->len);
 	ft_strdel(&buff->stream);
@@ -54,12 +54,12 @@ int		non_varg_format(t_format *format, t_obuf *buff)
 		len = format->i;
 		while (format->input[len] != '%')
 			++len;
-		if(!(res = ft_strsub(format->input, format->i, len)))
+		if(!(res = ft_strsub(format-> input, format->i, len)))
 			return (-1);
 		if (!join_buff(format, buff, res))
-		return (-1);
+			return (-1);
+		format->i += len;
 	}
-	format->i += len;
 	return (1);
 }
 
@@ -67,7 +67,7 @@ int		non_varg_format(t_format *format, t_obuf *buff)
 **	Takes an input and joins that to the buffer.
 */
 
-int		join_buff(t_format *format, t_obuf *buff, char *input)
+int		join_buff(t_obuf *buff, char *input)
 {
 	char *tmp;
 
@@ -85,58 +85,19 @@ int		join_buff(t_format *format, t_obuf *buff, char *input)
 **	the output stream.
 */
 
-int		input_parser(t_format *format)
+int		input_parser(t_format *format, t_obuf *buff)
 {
-	int findres;
-	if (findres = (find_type(format)) == -1)
+	int		index;
+	char	*key;
+
+	index = 0;
+	key = "csp%diouxXfb";
+
+	while (format->input[format->i] != key[index])
+		++index
+	if !(join_buff(buff, table(index, format, buff)))
 		return (-1);
-	else if (findres = 0)
-	{
-		format->va->varg = va_arg(format->va->valst, char)
-		join_buff()
-	}
-}
-
-typedef void (*fun)(char * thing, int i);
-
-/*
-**	When input_parser finds a flag. It will find its type and pass it to
-**	Print_flag and print out the flag with its paired variadic value.
-*/
-
-int		flag_check(t_format *format)
-{	
-	format->va->flag = format->farr[0];
-	format->va->type = format->farr[1];
-	format->va->base = format->farr[2];
-	format->va->varg = va_arg(format->va->valst, format->va->type);
-}
-
-/*
-**	Takes the flag index from Flag_check and converts the variadic value
-**	to ASCII and inserts it into the buffer to be printed.
-*/
-
-char	*convert_input(t_format *format, t_obuf *buff)
-{
-	char		*res;
-
-	if (!(res = ft_itoa_base(format->va->varg, format->va->base)))
-		return (NULL);
-	return (res);
-}
-
-/*
-**	Takes the buffer and vargs
-*/
-
-char	*obuf_vargs(t_format *format, t_obuf *buff)
-{
-	char *input;
-
-	if (!(join_buff(format, buff, input)))
-		return (NULL);
-
+	return (1);
 }
 
 /*

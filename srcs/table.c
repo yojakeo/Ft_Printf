@@ -6,39 +6,128 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/14 04:35:34 by japarbs           #+#    #+#             */
-/*   Updated: 2019/08/16 20:59:15 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/09/20 22:49:34 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
+# define CONVS "csp%diouxXfbrk"
+
 /*
-**	Finds the type of data for the convertion.
-**	0: char, 1: String, 2: Bases, 3: Ints, 4: Floats, 5: Exit, -1: Invalid.
+**	Dispatch table that calls the correct conversion. Uses a string to find the
+**	conversion from an index. (csp%diouxXfbrk)
 */
 
-int		find_type(t_format format)
+char	*table(int index, t_format *format, t_obuf *buff)
 {
-	if (format->input[format->i] == 'c')
-		return (0);
-	if (format->input[format->i] == 's')
-		return (1);
-	if (format->input[format->i] == 'b' || format->input[format->i] == 'o' || \
-	format->input[format->i] == 'x' || format->input[format->i] == 'X')
-		return (2);
-	if (format->input[format->i] == 'i' || format->input[format->i] == 'd' || \
-	format->input[format->i] == 'u')
-		return (3);
-	if 	(format->input[format->i] == 'f' || format->input[format->i] == 'g')
-		return (4);
-	// return (find_flag_type(format));
-	return (-1)
+	static char	*(*p[])() = {
+		[0] = flag_char,
+		[1] = flag_string,
+		[2] = flag_pointer,
+		[3] = flag_percent,
+		[4] = flag_int,
+		[5] = flag_int,
+		[6] = flag_oct,
+		[7] = flag_uint,
+		[8] = flag_float,
+		[9] = flag_hex,
+		[10] = flag_hex,
+		[11] = flag_binary,
+	};
+	return (p[index](format, buff));
 }
 
-int		find_flag_type(t_format format)
+char	*flag_char(t_format *format, t_obuf *buff)
 {
-	if (format->input[format->i] == 'l' || 
-	(format->input[format->i] == 'l' && format->input[format->i + 1] == 'l'))
-		return (3);
-	
+	char	c;
+	char	*res;
+
+	c = (char)va_arg(format->va->valst, int);
+	if (!(res = ft_strdup(c)))
+		return (NULL);
+	return (res);	
+}
+
+char	*flag_string(t_format *format, t_obuf *buff)
+{
+	char	*res;
+	char	*str;
+
+	str = va_arg(format->va->valst, char *);
+	if (!str)
+		str = "(null)";
+	if (!(res = ft_strdup(str)))
+		return (NULL);
+	return (res);
+}
+
+char	*flag_pointer(t_format *format, t_obuf *buff)
+{
+	char	*res;
+	va_int = va_arg(format->va->valst, unsigned long long);
+
+	return (res);
+}
+
+char	*flag_percent(t_format *format, t_obuf *buff)
+{
+	char	*res;
+	res = ft_strdup("%");
+	return (res);
+}
+
+char	*flag_int(t_format *format, t_obuf *buff)
+{
+	char		*res;
+	long long	va_int;
+
+	va_int = va_arg(format->va->valst, long long);
+	return (ft_itoa(va_int));
+}
+
+char	*flag_oct(t_format *format, t_obuf *buff)
+{
+	char				*res;
+	unsigned long long	va_int;
+
+	va_int = va_arg(format->va->valst, unsigned long long);
+	return (ft_itoa_base(va_int, 8));
+	return (res);
+}
+
+char	*flag_uint(t_format *format, t_obuf *buff)
+{
+	char	*res;
+
+
+	return (res);
+}
+
+char	*flag_float(t_format *format, t_obuf *buff)
+{
+	char	*res;
+
+
+	return (res);
+}
+
+char	*flag_hex(t_format *format, t_obuf *buff)
+{
+	char				*res;
+	unsigned long long	va_int;
+
+	va_int = va_arg(format->va->valst, unsigned long long);
+	return (ft_itoa_base(va_int, 16));
+	return (res);
+}
+
+char	*flag_binary(t_format *format, t_obuf *buff)
+{
+	char				*res;
+	unsigned long long	va_int;
+
+	va_int = va_arg(format->va->valst, unsigned long long);
+	return (ft_itoa_base(va_int, 2));
+	return (res);
 }

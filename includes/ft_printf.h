@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 16:29:22 by japarbs           #+#    #+#             */
-/*   Updated: 2019/08/18 22:39:06 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/09/20 15:31:58 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,7 @@ typedef struct	s_va
 	va_list		valst;
 	int			i;
 	int			count;
-	void		*varg;
-	enum types	type;
-	enum flags	flag;
-	enum bases	base;
 }				t_va;
-
-typedef struct	s_val
-{
-	char		*base;
-	char		*type;
-	char		*flag;
-}				t_val;
 
 typedef struct	s_obuf
 {
@@ -53,36 +42,6 @@ typedef struct	s_obuf
 	size_t		len;
 }				t_obuf;
 
-enum	types
-{
-	s = (char *)
-	c = (char)
-	p = (void *) print address
-	d = (int)
-	i = (int)
-	u = (unsigned int)
-	f = (float)
-	//bonus types
-	e = (char *) scientific notation
-	g = (double)
-}		types;
-
-enum	bases
-{
-	b = 2;
-	o = 8;
-	x = 16;
-	X = 16;
-}		bases;
-
-enum	flags
-{
-	hh = unsigned char;
-	h = short;
-	l = long;
-	ll = long long;
-	L = long double;
-}		flags;
 /*
 **	Main function
 */
@@ -91,22 +50,29 @@ void			ft_printf(const char * restrict format, ...);
 **	Parsing
 */
 int				input_parser(t_format *format);
-char			*convert_input(t_format *format, t_obuf *buff);
 /*
-**	Dispatch Table
+**	Dispatch Functions
 */
-int				find_type(t_format format);
-int				find_flag_type(t_format format);
+char			*table(int index, t_format *format, t_obuf *buff);
+
+char			*flag_char(t_format *format, t_obuf *buff);
+char			*flag_string(t_format *format, t_obuf *buff);
+char			*flag_pointer(t_format *format, t_obuf *buff);
+char			*flag_percent(t_format *format, t_obuf *buff);
+char			*flag_int(t_format *format, t_obuf *buff);
+char			*flag_oct(t_format *format, t_obuf *buff);
+char			*flag_uint(t_format *format, t_obuf *buff);
+char			*flag_float(t_format *format, t_obuf *buff);
+char			*flag_hex(t_format *format, t_obuf *buff);
+char			*flag_binary(t_format *format, t_obuf *buff);
 /*
 **	Flagging
 */
-int				flag_check(t_format *format);
 /*
 **	Buffering
 */
 int				non_varg_format(t_format format, t_obuf buff);
 int				join_buff(t_format *format, t_obuf *buff, char *input);
-char			*obuf_vargs(t_format *format, t_obuf *buff);
 #endif
 
 /*
