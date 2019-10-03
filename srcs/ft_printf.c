@@ -6,59 +6,77 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 18:55:54 by japarbs           #+#    #+#             */
-/*   Updated: 2019/09/20 17:54:48 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/02 21:41:26 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_printf.h"
 
 /*
-**	Printf is a variadic function. It takes a string, parsed to find
+**	Ft_printf is a variadic function. It takes a string, parsed to find
 **	varg (Variadic Argument) indicators and inserted into the stream.
 **	Returns the amount of chars printed to the command line.
 */
 
 int		ft_printf(const char *input, ...)
 {
-	t_format	*format;
-	t_obuf		*buff;
+	t_format	format;
+	t_obuf		buff;
+	int			loopnum = 0;
+	int			intres;
 
-	format->input = input;
-	va_start(format->va->valst, format->input);
-	format->i = 0;
-	while (format->input[format->i])
+	printf_init(&format, &buff, input);
+	va_start(format.valst, input);
+	while (format.input[format.i])
 	{
-		if (!non_varg_format(format, buff))
+		loopnum++;
+		printf("\n\nloop: %i\n", loopnum);
+		if ((intres = non_varg_format(&format, &buff)) == -1)
+		{
+			printf("FAIL(NVARG)\n");
 			return (-1);
-		if (!input_parser(format))
+		}
+		if ((intres = input_parser(&format, &buff)) == -1)
+		{
+			printf("FAIL(PARSE)\n");
 			return (-1);
+		}
+		printf("Current Stream: %s", buff.stream);
 	}
-	write(1, buff->stream, buff->len);
-	ft_strdel(&buff->stream);
-	va_end(format->va->valst);
-	return (buff->len);
+	printf("\nEnd of program, Printing.\nbuff.len: %zu, strlen: %zu\n", buff.len, ft_strlen(buff.stream));
+	write(1, buff.stream, buff.len);
+	ft_strdel(&buff.stream);
+	va_end(format.valst);
+	return (buff.len);
+}
+
+void	printf_init(t_format *format, t_obuf *buff, const char *input)
+{
+	format->input = input;
+	format->i = 0;
+	format->byte_size = 0;
+	buff->stream = ft_strnew(0);
+	buff->len = 0;
 }
 
 /*
 **	Takes non-varg inputs within the format string and pushes them into
-**	the buffer to be printed with varg inputs.
+**	the buffer to be printed with varg inputs. It also moves the index
+**	to the next '%' char to be processed later on by the input_parser function.
 */
 
 int		non_varg_format(t_format *format, t_obuf *buff)
 {
 	char *res;
-	int len;
+	size_t sublen;
 
-	if (format->input[format->i] != '%')
+	if (format->input[format->i] && format->input[format->i] != '%')
 	{
-		len = format->i;
-		while (format->input[len] != '%')
-			++len;
-		if(!(res = ft_strsub(format-> input, format->i, len)))
+		sublen = ft_strdlen(&format->input[format->i], '%');
+		if (!(res = ft_strsub(format->input, format->i, sublen))
+		|| !join_buff(buff, res))
 			return (-1);
-		if (!join_buff(format, buff, res))
-			return (-1);
-		format->i += len;
+		format->i += sublen;
 	}
 	return (1);
 }
@@ -71,32 +89,70 @@ int		join_buff(t_obuf *buff, char *input)
 {
 	char *tmp;
 
-	if (!(tmp = ft_strjoin(buff->stream, input)));
+	// printf("Entering buff, input: ~%s~\n", input);
+	if (!input || !(tmp = ft_strjoin(buff->stream, input)))
 		return (-1);
-	buff->len = ft_strlen(buff->stream);
-	ft_strdel(buff->stream);
+	// printf("Join check\n");
+	ft_strdel(&buff->stream);
 	buff->stream = tmp;
 	ft_strdel(&input);
+	buff->len = ft_strlen(buff->stream);
+	// printf("Len: %zu, Buff: ~%s~\n", buff->len, buff->stream);
 	return (1);
 }
 
 /*
-**	Parses Printf's input stream for variadic inputs and inserts them into
+**	Parses ft_Printf's input stream for variadic inputs and inserts them into
 **	the output stream.
 */
 
+void	find_size(t_format *format)
+{
+	char	*key;
+	int		keyi;
+
+	key = "lLhH";
+	keyi = -1;
+	while (key[++keyi])
+		if (key[keyi] == format->input[format->i])
+			break ;
+	format->byte_size = key[keyi];
+	if (format->byte_size == 0)
+		return ;
+	else if (format->byte_size == 'l' && format->input[format->i] == 'l')
+	{
+		format->byte_size = 'L';
+		format->i += 2;
+	}
+	else if (format->byte_size == 'h' && format->input[format->i] == 'h')
+	{
+		format->byte_size = 'H';
+		format->i += 2;
+	}
+}
+
+// void	parse_flags(t_format *format)
+// {
+
+// }
+
 int		input_parser(t_format *format, t_obuf *buff)
 {
-	int		index;
-	char	*key;
-
-	index = 0;
-	key = "csp%diouxXfb";
-
-	while (format->input[format->i] != key[index])
-		++index
-	if !(join_buff(buff, table(index, format, buff)))
+	printf("Enter Parse\n");
+	if (!format->input[format->i])
+		return (1);
+	if (format->input[format->i] == '%')
+		format->i++;
+	else
 		return (-1);
+	printf("Enter size finder\n");
+	find_size(format);
+	// parse_flags(format);
+	printf("Enter Table\n");
+	if (join_buff(buff, table((int)format->input[format->i], format)) == -1)
+		return (-1);
+	format->i++;
+	printf("Exit Parse\n");
 	return (1);
 }
 
@@ -121,5 +177,5 @@ with both of them to validate this bonus.
 non-printable characters, %k to print a date in any ordinary ISO format etc.
 • Management of alter tools for colors, fd or other fun stuff like that
 
-printf("Le fichier{cyan}%s{eoc} contient : {red}%s{eoc}", filename, str);
+ft_printf("Le fichier{cyan}%s{eoc} contient : {red}%s{eoc}", filename, str);
 */
