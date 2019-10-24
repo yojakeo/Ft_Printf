@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   uint_flags.c                                       :+:      :+:    :+:   */
+/*   other_int_flags.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/30 21:23:37 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/20 01:27:19 by japarbs          ###   ########.fr       */
+/*   Created: 2019/09/30 16:20:39 by japarbs           #+#    #+#             */
+/*   Updated: 2019/10/20 02:09:33 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static unsigned long long	get_nb(t_format *fmt)
 **	Creates the padding string with the proper set of chars with NULL.
 */
 
-static char			*format_uint(t_format *fmt, int len)
+static char			*format_hex(t_format *fmt, int len)
 {
 	char *res;
 
@@ -55,8 +55,8 @@ static char			*format_uint(t_format *fmt, int len)
 	}
 	if (fmt->zero_flag)
 		fmt->precision = fmt->width;
-	if (fmt->space_flag || fmt->pos_flag)
-		fmt->width--;
+	if (fmt->alt_flag)
+		fmt->width -= 2;
 	if ((fmt->width - len) >= 1)
 		res = (char *)malloc(fmt->width - len);
 	else
@@ -82,7 +82,7 @@ static char			*format_uint(t_format *fmt, int len)
 **	Free and return res to be joined with the buffer.
 */
 
-char	*flag_uint(t_format *fmt)
+char	*flag_hex(t_format *fmt)
 {
 	char				*res;
 	char				*itoares;
@@ -91,13 +91,21 @@ char	*flag_uint(t_format *fmt)
 	int					len;
 
 	va_int = get_nb(fmt);
-	len = ft_intlen(va_int);
-	itoares = ft_itoa_base(va_int, 10);
-	formatres = format_uint(fmt, len);
+	len = ft_intlen_base(va_int, 16);
+	itoares = ft_itoa_base(va_int, 16);
+	if (fmt->alt_flag)
+	{
+		res = ft_strjoin("0x", itoares);
+		ft_strdel(&itoares);
+		itoares = res;
+	}
+	formatres = format_hex(fmt, len);
 	if (!fmt->neg_flag)
 		res = ft_strjoin(formatres, itoares);
 	else
 		res = ft_strjoin(itoares, formatres);
+	if (fmt->input[fmt->i] == 'X')
+		ft_strtoupper(res);
 	ft_strdel(&formatres);
 	ft_strdel(&itoares);
 	return (res);

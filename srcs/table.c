@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/14 04:35:34 by japarbs           #+#    #+#             */
-/*   Updated: 2019/09/30 19:38:32 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/05 23:36:51 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 **	index to call the correct function.
 */
 
-char	*table(int flag, t_format *format)
+char	*table(int flag, t_format *fmt)
 {
 	static char	*(*p[])() = {
 		['c'] = flag_char,
@@ -35,5 +35,5 @@ char	*table(int flag, t_format *format)
 		['X'] = flag_hex,
 		['b'] = flag_binary,
 	};
-	return (p[flag](format));
+	return (p[flag](fmt));
 }
