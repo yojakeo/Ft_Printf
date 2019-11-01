@@ -1,37 +1,53 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   uint_flags.c                                       :+:      :+:    :+:   */
+/*   float_flag.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/30 21:23:37 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 20:28:06 by japarbs          ###   ########.fr       */
+/*   Created: 2019/10/28 20:54:39 by japarbs           #+#    #+#             */
+/*   Updated: 2019/10/31 15:53:56 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_printf.h"
 
+static long double	get_nb(t_format *fmt)
+{
+	long double	va_float;
+
+	va_float = 0;
+	if (fmt->varg_size == 0)
+		va_float = va_arg(fmt->valst, double);
+	else if (fmt->varg_size == 'l')
+		va_float = va_arg(fmt->valst, double);
+	else if (fmt->varg_size == 'L')
+		va_float = va_arg(fmt->valst, long double);
+	return (va_float);
+}
+
 /*
-**	Grabs the value with the correct size.
+**	Places signs and padding in the proper position with
+**	consideration for alignment.
 */
 
-static unsigned long long	get_nb(t_format *fmt)
+static void			handle_flags(t_format *fmt, char *res, long long va_float, int len)
 {
-	unsigned long long	va_int;
+	int 	signpos;
 
-	va_int = 0;
-	if (fmt->varg_size == 0)
-		va_int = va_arg(fmt->valst, unsigned int);
-	else if (fmt->varg_size == 'l')
-		va_int = va_arg(fmt->valst, unsigned long);
-	else if (fmt->varg_size == 'L')
-		va_int = va_arg(fmt->valst, unsigned long long);
-	else if (fmt->varg_size == 'h')
-		va_int = (unsigned short)va_arg(fmt->valst, unsigned int);
-	else if (fmt->varg_size == 'H')
-		va_int = (unsigned char)va_arg(fmt->valst, unsigned int);
-	return (va_int);
+	if (!fmt->neg_flag)
+		signpos = fmt->width - len;
+	else
+		signpos = 0;
+	if ((fmt->pos_flag || fmt->space_flag) || va_float < 0)
+	{
+		if (va_float < 0)
+			res[signpos] = '-';
+		else if (fmt->pos_flag && va_float >= 0)
+			res[signpos] = '+';
+		else if (fmt->space_flag && va_float >= 0)
+			res[signpos] = ' ';
+	}
 }
 
 /*
@@ -41,21 +57,18 @@ static unsigned long long	get_nb(t_format *fmt)
 **	Creates the padding string with the proper set of chars with NULL.
 */
 
-static char			*format_uint(t_format *fmt, int len)
+static char			*format_float(t_format *fmt, long long va_float, int len)
 {
 	char *res;
 
 	fmt->width = (fmt->width < len) ? len : fmt->width;
-	fmt->precision = len;
-	if (fmt->pos_flag || fmt->space_flag)
+	if ((fmt->pos_flag || fmt->space_flag) || va_float < 0)
 	{
 		++fmt->precision;
 		if (fmt->width == len)
 			++fmt->width;
 	}
-	if (fmt->zero_flag)
-		fmt->precision = fmt->width;
-	if (fmt->space_flag || fmt->pos_flag)
+	if ((fmt->neg_flag && va_float < 0) || fmt->space_flag || fmt->pos_flag)
 		fmt->width--;
 	if ((fmt->width - len) >= 1)
 		res = (char *)malloc(fmt->width - len);
@@ -67,28 +80,6 @@ static char			*format_uint(t_format *fmt, int len)
 		ft_memset(res, ' ', (fmt->width - len) + 1);
 	if (res)
 		res[fmt->width - len] = '\0';
-	return (res);
-}
-
-static char *handle_uint(t_format *fmt, unsigned long long va_int, int *len)
-{
-	char	*res;
-	char	*itoares;
-	char	*preres;
-
-	itoares =ft_itoa_base(va_int, 10);
-	if (fmt->precision && fmt->precision > *len)
-	{
-		preres = (char *)malloc((fmt->precision - *len) + 1);
-		ft_memset(preres, '0', (fmt->precision - *len));
-		preres[fmt->precision - *len] = '\0';
-		res = ft_strjoin(preres, itoares);
-		*len = fmt->precision;
-		ft_strdel(&preres);
-		ft_strdel(&itoares);
-	}
-	else
-		return (itoares);
 	return (res);
 }
 
@@ -105,23 +96,31 @@ static char *handle_uint(t_format *fmt, unsigned long long va_int, int *len)
 **	Free and return res to be joined with the buffer.
 */
 
-char	*flag_uint(t_format *fmt)
+char		*flag_float(t_format *fmt)
 {
-	char				*res;
-	char				*itoares;
-	char				*formatres;
-	unsigned long long	va_int;
-	int					len;
+	char		*res;
+	char		*floatres;
+	char		*formatres;
+	long double	va_float;
+	int			len;
 
-	va_int = get_nb(fmt);
-	len = ft_intlen_base(va_int,10);
-	itoares = handle_uint(fmt, va_int, &len);
-	formatres = format_uint(fmt, len);
-	if (!fmt->neg_flag)
-		res = ft_strjoin(formatres, itoares);
-	else
-		res = ft_strjoin(itoares, formatres);
+	va_float = get_nb(fmt);
+	len = ft_intlen((long long)va_float) + fmt->precision;
+	if (fmt->precision)
+		++len;
+	floatres = (va_float < 0) ? \
+	ft_ftoa(-va_float, fmt->precision) : ft_ftoa(va_float, fmt->precision);
+	if ((fmt->neg_flag && va_float < 0) || fmt->space_flag || fmt->pos_flag)
+	{
+		res = ft_strjoin("0", floatres);
+		ft_strdel(&floatres);
+		floatres = res;
+	}
+	formatres = format_float(fmt, va_float, len);
+	res = (!fmt->neg_flag) ? \
+	ft_strjoin(formatres, floatres) : ft_strjoin(floatres, formatres);
 	ft_strdel(&formatres);
-	ft_strdel(&itoares);
+	ft_strdel(&floatres);
+	handle_flags(fmt, res, va_float, len);
 	return (res);
 }

@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 16:29:22 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/20 00:22:56 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/28 20:46:31 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void			reset_flags(t_format *fmt);
 /*
 **	Floats
 */
-char			*ft_ftoa(double nbr);
+char			*ft_ftoa(long double input, int precision);
 /*
 **	Buffering
 */

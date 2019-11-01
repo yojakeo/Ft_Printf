@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   flag_chars.c                                       :+:      :+:    :+:   */
+/*   char_flags.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 19:37:40 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/23 16:48:23 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 18:56:58 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,14 @@ static char		*handle_string(t_format *fmt, char *va_str, int len)
 {
 	char	*res;
 
-	fmt->precision = (fmt->precision < len) ? len : fmt->precision;
-	if (fmt->precision >= 1)
-		res = (char *)malloc(fmt->precision + 1); 
+	if (fmt->precision && fmt->precision < len)
+	{
+		res = (char *)malloc(fmt->precision + 1);
+		ft_strncpy(res, va_str, fmt->precision);
+		res[fmt->precision] = '\0';
+	}
 	else
 		return (ft_strdup(va_str));
-	ft_strncpy(res, va_str, fmt->precision);
 	return (res);
 }
 
@@ -90,7 +92,7 @@ char	*flag_string(t_format *fmt)
 
 	va_str = va_arg(fmt->valst, char *);
 	len = ft_strlen(va_str);
-	stringres = (!va_str) ? "(null)" : handle_string(fmt, va_str, len);
+	stringres = (!va_str) ? ft_strdup("(null)") : handle_string(fmt, va_str, len);
 	formatres = format_char(fmt, len);
 	if (!fmt->neg_flag)
 		res = ft_strjoin(formatres, stringres);

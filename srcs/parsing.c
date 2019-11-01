@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/18 19:47:17 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/19 15:29:28 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 20:36:43 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,13 @@ int	input_parser(t_format *fmt, t_obuf *buff)
 	parse_flags(fmt);
 	precision_width(fmt);
 	find_size(fmt);
+	if (fmt->input[fmt->i] == 'f' && fmt->precision == -1)
+		fmt->precision = 6;
+	else if (fmt->precision == -1)
+		fmt->precision = 0;
 	if (join_buff(buff, table((int)fmt->input[fmt->i], fmt)) == -1)
 		return (-1);
 	fmt->i++;
+	reset_flags(fmt);
 	return (1);
 }

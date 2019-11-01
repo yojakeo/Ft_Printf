@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 18:55:54 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/02 21:41:26 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 15:48:57 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,69 +20,82 @@
 
 int		ft_printf(const char *input, ...)
 {
-	t_format	format;
+	t_format	fmt;
 	t_obuf		buff;
 	int			loopnum = 0;
 	int			intres;
 
-	printf_init(&format, &buff, input);
-	va_start(format.valst, input);
-	while (format.input[format.i])
+	printf_init(&fmt, &buff, input);
+	va_start(fmt.valst, input);
+	while (fmt.input[fmt.i])
 	{
 		loopnum++;
-		printf("\n\nloop: %i\n", loopnum);
-		if ((intres = non_varg_format(&format, &buff)) == -1)
-		{
-			printf("FAIL(NVARG)\n");
+		if ((intres = non_varg_format(&fmt, &buff)) == -1)
 			return (-1);
-		}
-		if ((intres = input_parser(&format, &buff)) == -1)
-		{
-			printf("FAIL(PARSE)\n");
+		if ((intres = input_parser(&fmt, &buff)) == -1)
 			return (-1);
-		}
-		printf("Current Stream: %s", buff.stream);
 	}
-	printf("\nEnd of program, Printing.\nbuff.len: %zu, strlen: %zu\n", buff.len, ft_strlen(buff.stream));
 	write(1, buff.stream, buff.len);
 	ft_strdel(&buff.stream);
-	va_end(format.valst);
+	va_end(fmt.valst);
 	return (buff.len);
 }
 
-void	printf_init(t_format *format, t_obuf *buff, const char *input)
+/*
+**	resets the state of all flags and measurements to assure flags from previous
+**	inputs are not used.
+*/
+
+void	reset_flags(t_format *fmt)
 {
-	format->input = input;
-	format->i = 0;
-	format->byte_size = 0;
+	fmt->varg_size = 0;
+	fmt->precision = -1;
+	fmt->width = 0;
+	fmt->neg_flag = 0;
+	fmt->pos_flag = 0;
+	fmt->space_flag = 0;
+	fmt->zero_flag = 0;
+	fmt->alt_flag = 0;
+}
+
+/*
+**	Init for ft_printf.
+*/
+
+void	printf_init(t_format *fmt, t_obuf *buff, const char *input)
+{
+	fmt->input = input;
+	fmt->i = 0;
+	reset_flags(fmt);
 	buff->stream = ft_strnew(0);
 	buff->len = 0;
 }
 
 /*
-**	Takes non-varg inputs within the format string and pushes them into
+**	Takes non-varg inputs within the fmt string and pushes them into
 **	the buffer to be printed with varg inputs. It also moves the index
 **	to the next '%' char to be processed later on by the input_parser function.
 */
 
-int		non_varg_format(t_format *format, t_obuf *buff)
+int		non_varg_format(t_format *fmt, t_obuf *buff)
 {
 	char *res;
 	size_t sublen;
 
-	if (format->input[format->i] && format->input[format->i] != '%')
+	if (fmt->input[fmt->i] && fmt->input[fmt->i] != '%')
 	{
-		sublen = ft_strdlen(&format->input[format->i], '%');
-		if (!(res = ft_strsub(format->input, format->i, sublen))
+		sublen = ft_strdlen(&fmt->input[fmt->i], '%');
+		if (!(res = ft_strsub(fmt->input, fmt->i, sublen))
 		|| !join_buff(buff, res))
 			return (-1);
-		format->i += sublen;
+		fmt->i += sublen;
 	}
 	return (1);
 }
 
 /*
-**	Takes an input and joins that to the buffer.
+**	Takes an input and joins that to the buffer. Deleting the input.
+**	This function will always receive a allocated string.
 */
 
 int		join_buff(t_obuf *buff, char *input)
@@ -98,61 +111,6 @@ int		join_buff(t_obuf *buff, char *input)
 	ft_strdel(&input);
 	buff->len = ft_strlen(buff->stream);
 	// printf("Len: %zu, Buff: ~%s~\n", buff->len, buff->stream);
-	return (1);
-}
-
-/*
-**	Parses ft_Printf's input stream for variadic inputs and inserts them into
-**	the output stream.
-*/
-
-void	find_size(t_format *format)
-{
-	char	*key;
-	int		keyi;
-
-	key = "lLhH";
-	keyi = -1;
-	while (key[++keyi])
-		if (key[keyi] == format->input[format->i])
-			break ;
-	format->byte_size = key[keyi];
-	if (format->byte_size == 0)
-		return ;
-	else if (format->byte_size == 'l' && format->input[format->i] == 'l')
-	{
-		format->byte_size = 'L';
-		format->i += 2;
-	}
-	else if (format->byte_size == 'h' && format->input[format->i] == 'h')
-	{
-		format->byte_size = 'H';
-		format->i += 2;
-	}
-}
-
-// void	parse_flags(t_format *format)
-// {
-
-// }
-
-int		input_parser(t_format *format, t_obuf *buff)
-{
-	printf("Enter Parse\n");
-	if (!format->input[format->i])
-		return (1);
-	if (format->input[format->i] == '%')
-		format->i++;
-	else
-		return (-1);
-	printf("Enter size finder\n");
-	find_size(format);
-	// parse_flags(format);
-	printf("Enter Table\n");
-	if (join_buff(buff, table((int)format->input[format->i], format)) == -1)
-		return (-1);
-	format->i++;
-	printf("Exit Parse\n");
 	return (1);
 }
 
