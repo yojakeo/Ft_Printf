@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/28 20:54:39 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 15:53:56 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 21:10:59 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,10 @@ static long double	get_nb(t_format *fmt)
 **	consideration for alignment.
 */
 
-static void			handle_flags(t_format *fmt, char *res, long long va_float, int len)
+static void			handle_flags(t_format *fmt, \
+					char *res, long long va_float, int len)
 {
-	int 	signpos;
+	int signpos;
 
 	if (!fmt->neg_flag)
 		signpos = fmt->width - len;
@@ -83,7 +84,6 @@ static char			*format_float(t_format *fmt, long long va_float, int len)
 	return (res);
 }
 
-
 /*
 **	The function that handles int flag conversion.
 **	Logic:
@@ -96,7 +96,7 @@ static char			*format_float(t_format *fmt, long long va_float, int len)
 **	Free and return res to be joined with the buffer.
 */
 
-char		*flag_float(t_format *fmt)
+char				*flag_float(t_format *fmt)
 {
 	char		*res;
 	char		*floatres;

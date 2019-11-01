@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/23 22:26:39 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/30 23:51:52 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 20:52:56 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 **	Takes a number and brings it up to a given power.
 */
 
-long	ft_pow(int a, int b)
+long		ft_pow(int a, int b)
 {
 	long	power;
 
@@ -29,7 +29,7 @@ long	ft_pow(int a, int b)
 	return (power);
 }
 
-int		count_zeros(double fnum, int precision)
+int			count_zeros(double fnum, int precision)
 {
 	int		count;
 	double	fwork;
@@ -72,7 +72,7 @@ static char	*make_float(char *ires, long long fnum, int precision, int zeros)
 **	Float & Double Float to ASCII conversion.
 */
 
-char	*ft_ftoa(long double input, int precision)
+char		*ft_ftoa(long double input, int precision)
 {
 	char		*res;
 	char		*ires;

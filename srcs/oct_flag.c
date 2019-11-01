@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/20 02:04:35 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/20 02:13:21 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 21:03:09 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static unsigned long long	get_nb(t_format *fmt)
 **	Creates the padding string with the proper set of chars with NULL.
 */
 
-static char			*format_oct(t_format *fmt, int len)
+static char					*format_oct(t_format *fmt, int len)
 {
 	char *res;
 
@@ -82,7 +82,7 @@ static char			*format_oct(t_format *fmt, int len)
 **	Free and return res to be joined with the buffer.
 */
 
-char	*flag_oct(t_format *fmt)
+char						*flag_oct(t_format *fmt)
 {
 	char				*res;
 	char				*itoares;

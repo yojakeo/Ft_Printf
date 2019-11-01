@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 21:23:37 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 20:28:06 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 21:08:10 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static unsigned long long	get_nb(t_format *fmt)
 **	Creates the padding string with the proper set of chars with NULL.
 */
 
-static char			*format_uint(t_format *fmt, int len)
+static char					*format_uint(t_format *fmt, int len)
 {
 	char *res;
 
@@ -70,13 +70,18 @@ static char			*format_uint(t_format *fmt, int len)
 	return (res);
 }
 
-static char *handle_uint(t_format *fmt, unsigned long long va_int, int *len)
+/*
+**	Creates the number string and takes in precision to correctly size it.
+*/
+
+static char					*handle_uint(t_format *fmt, \
+							unsigned long long va_int, int *len)
 {
 	char	*res;
 	char	*itoares;
 	char	*preres;
 
-	itoares =ft_itoa_base(va_int, 10);
+	itoares = ft_itoa_base(va_int, 10);
 	if (fmt->precision && fmt->precision > *len)
 	{
 		preres = (char *)malloc((fmt->precision - *len) + 1);
@@ -92,7 +97,6 @@ static char *handle_uint(t_format *fmt, unsigned long long va_int, int *len)
 	return (res);
 }
 
-
 /*
 **	The function that handles int flag conversion.
 **	Logic:
@@ -105,7 +109,7 @@ static char *handle_uint(t_format *fmt, unsigned long long va_int, int *len)
 **	Free and return res to be joined with the buffer.
 */
 
-char	*flag_uint(t_format *fmt)
+char						*flag_uint(t_format *fmt)
 {
 	char				*res;
 	char				*itoares;
@@ -114,7 +118,7 @@ char	*flag_uint(t_format *fmt)
 	int					len;
 
 	va_int = get_nb(fmt);
-	len = ft_intlen_base(va_int,10);
+	len = ft_intlen_base(va_int, 10);
 	itoares = handle_uint(fmt, va_int, &len);
 	formatres = format_uint(fmt, len);
 	if (!fmt->neg_flag)

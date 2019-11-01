@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   other_int_flags.c                                  :+:      :+:    :+:   */
+/*   hex_flag.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 16:20:39 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/20 02:09:33 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 21:11:57 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static unsigned long long	get_nb(t_format *fmt)
 **	Creates the padding string with the proper set of chars with NULL.
 */
 
-static char			*format_hex(t_format *fmt, int len)
+static char					*format_hex(t_format *fmt, int len)
 {
 	char *res;
 
@@ -82,7 +82,7 @@ static char			*format_hex(t_format *fmt, int len)
 **	Free and return res to be joined with the buffer.
 */
 
-char	*flag_hex(t_format *fmt)
+char						*flag_hex(t_format *fmt)
 {
 	char				*res;
 	char				*itoares;

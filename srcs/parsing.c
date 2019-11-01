@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/18 19:47:17 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 20:36:43 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 21:17:18 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static void	parse_flags(t_format *fmt)
 **	the buffered data stream.
 */
 
-int	input_parser(t_format *fmt, t_obuf *buff)
+int			input_parser(t_format *fmt, t_obuf *buff)
 {
 	if (!fmt->input[fmt->i])
 		return (1);

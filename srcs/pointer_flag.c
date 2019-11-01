@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 19:36:55 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/28 21:03:44 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 21:00:03 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static char			*format_pointer(t_format *fmt, int len)
 **	Free and return res to be joined with the buffer.
 */
 
-char	*flag_pointer(t_format *fmt)
+char				*flag_pointer(t_format *fmt)
 {
 	char				*res;
 	char				*itoares;
@@ -66,7 +66,6 @@ char	*flag_pointer(t_format *fmt)
 	ft_strdel(&itoares);
 	itoares = res;
 	formatres = format_pointer(fmt, len);
-		return (NULL);
 	if (!fmt->neg_flag)
 		res = ft_strjoin(formatres, itoares);
 	else

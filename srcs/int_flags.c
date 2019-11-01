@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 16:13:52 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 19:22:18 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 21:02:53 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static long long	get_nb(t_format *fmt)
 
 static void			handle_flags(t_format *fmt, char *res, long long va_int)
 {
-	int 	signpos;
+	int	signpos;
 
 	if (!fmt->neg_flag)
 		signpos = fmt->width - fmt->precision;
@@ -94,7 +94,7 @@ static char			*format_int(t_format *fmt, long long va_int, int len)
 	return (res);
 }
 
-static char *handle_int(t_format *fmt, long long va_int, int *len)
+static char			*handle_int(t_format *fmt, long long va_int, int *len)
 {
 	char	*res;
 	char	*itoares;
@@ -128,7 +128,7 @@ static char *handle_int(t_format *fmt, long long va_int, int *len)
 **	Free and return res to be joined with the buffer.
 */
 
-char		*flag_int(t_format *fmt)
+char				*flag_int(t_format *fmt)
 {
 	char		*res;
 	char		*itoares;

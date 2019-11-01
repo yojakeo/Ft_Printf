@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 18:55:54 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 15:48:57 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/10/31 20:54:56 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,12 @@ int		ft_printf(const char *input, ...)
 {
 	t_format	fmt;
 	t_obuf		buff;
-	int			loopnum = 0;
 	int			intres;
 
 	printf_init(&fmt, &buff, input);
 	va_start(fmt.valst, input);
 	while (fmt.input[fmt.i])
 	{
-		loopnum++;
 		if ((intres = non_varg_format(&fmt, &buff)) == -1)
 			return (-1);
 		if ((intres = input_parser(&fmt, &buff)) == -1)
@@ -79,8 +77,8 @@ void	printf_init(t_format *fmt, t_obuf *buff, const char *input)
 
 int		non_varg_format(t_format *fmt, t_obuf *buff)
 {
-	char *res;
-	size_t sublen;
+	char	*res;
+	size_t	sublen;
 
 	if (fmt->input[fmt->i] && fmt->input[fmt->i] != '%')
 	{
@@ -102,38 +100,11 @@ int		join_buff(t_obuf *buff, char *input)
 {
 	char *tmp;
 
-	// printf("Entering buff, input: ~%s~\n", input);
 	if (!input || !(tmp = ft_strjoin(buff->stream, input)))
 		return (-1);
-	// printf("Join check\n");
 	ft_strdel(&buff->stream);
 	buff->stream = tmp;
 	ft_strdel(&input);
 	buff->len = ft_strlen(buff->stream);
-	// printf("Len: %zu, Buff: ~%s~\n", buff->len, buff->stream);
 	return (1);
 }
-
-/*
-Syntax
-%[parameter][flags][width][.precision][length]type
-
-• You have to manage the following conversions: csp
-• You have to manage the following conversions: diouxX with the following flags: hh,
-h, l and ll.
-• You have to manage the following conversion: f with the following flags: l and L.
-• You must manage %%
-• You must manage the flags #0-+ and space
-• You must manage the minimum field-width
-• You must manage the precision
-
-Bonus
-• More detailed conversions management: e and g. Be careful, your L flag must works
-with both of them to validate this bonus.
-• More detailed flags management: *, $ and ’.
-• Non-existing flags management: %b to print in binary, %r to print a string of
-non-printable characters, %k to print a date in any ordinary ISO format etc.
-• Management of alter tools for colors, fd or other fun stuff like that
-
-ft_printf("Le fichier{cyan}%s{eoc} contient : {red}%s{eoc}", filename, str);
-*/
