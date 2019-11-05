@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 19:36:55 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 21:00:03 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/01 18:10:40 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,6 @@ char				*flag_pointer(t_format *fmt)
 		res = ft_strjoin(formatres, itoares);
 	else
 		res = ft_strjoin(itoares, formatres);
-	ft_strdel(&res);
-	res = res;
 	ft_strdel(&itoares);
 	ft_strdel(&formatres);
 	return (res);

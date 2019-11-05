@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 18:55:54 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 20:54:56 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/02 13:30:07 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	reset_flags(t_format *fmt)
 {
 	fmt->varg_size = 0;
 	fmt->precision = -1;
+	fmt->pre_flag = 0;
 	fmt->width = 0;
 	fmt->neg_flag = 0;
 	fmt->pos_flag = 0;

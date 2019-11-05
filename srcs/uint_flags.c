@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 21:23:37 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 21:08:10 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/02 14:46:06 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ static char					*handle_uint(t_format *fmt, \
 	char	*preres;
 
 	itoares = ft_itoa_base(va_int, 10);
-	if (fmt->precision && fmt->precision > *len)
+	if (fmt->pre_flag && fmt->precision > *len)
 	{
 		preres = (char *)malloc((fmt->precision - *len) + 1);
 		ft_memset(preres, '0', (fmt->precision - *len));

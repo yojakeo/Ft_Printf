@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/18 19:47:17 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 21:17:18 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/02 13:30:44 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static void	precision_width(t_format *fmt)
 	}
 	if (fmt->input[fmt->i] == '.')
 	{
+		fmt->pre_flag = 1;
 		++fmt->i;
 		if (ft_isdigit(fmt->input[fmt->i]))
 		{
@@ -68,6 +69,8 @@ static void	precision_width(t_format *fmt)
 			if (fmt->precision < 0)
 				fmt->precision = 0;
 		}
+		else
+			fmt->precision = 0;
 	}
 }
 

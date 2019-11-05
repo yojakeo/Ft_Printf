@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 19:37:40 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 21:16:51 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/02 15:44:17 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,16 @@ static char		*format_char(t_format *fmt, int len)
 **	Handles precision of the String flag.
 */
 
-static char		*handle_string(t_format *fmt, char *va_str, int len)
+static char		*handle_string(t_format *fmt, char *va_str, int *len)
 {
 	char	*res;
 
-	if (fmt->precision && fmt->precision < len)
+	if (fmt->pre_flag && fmt->precision < *len)
 	{
 		res = (char *)malloc(fmt->precision + 1);
 		ft_strncpy(res, va_str, fmt->precision);
 		res[fmt->precision] = '\0';
+		*len = fmt->precision;
 	}
 	else
 		return (ft_strdup(va_str));
@@ -91,9 +92,10 @@ char			*flag_string(t_format *fmt)
 	int		len;
 
 	va_str = va_arg(fmt->valst, char *);
+	if (!va_str)
+		va_str = "(null)";
 	len = ft_strlen(va_str);
-	stringres = (!va_str) ? \
-	ft_strdup("(null)") : handle_string(fmt, va_str, len);
+	stringres = handle_string(fmt, va_str, &len);
 	formatres = format_char(fmt, len);
 	if (!fmt->neg_flag)
 		res = ft_strjoin(formatres, stringres);
