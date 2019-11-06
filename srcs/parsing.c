@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/18 19:47:17 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/02 13:30:44 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/05 18:18:27 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ static void	find_size(t_format *fmt)
 	fmt->varg_size = key[keyi];
 	if (fmt->varg_size == 0)
 		return ;
-	else if (fmt->varg_size == 'l' && fmt->input[fmt->i] == 'l')
+	else if (fmt->varg_size == 'l' && fmt->input[fmt->i + 1] == 'l')
 	{
 		fmt->varg_size = 'L';
 		fmt->i += 2;
 	}
-	else if (fmt->varg_size == 'h' && fmt->input[fmt->i] == 'h')
+	else if (fmt->varg_size == 'h' && fmt->input[fmt->i + 1] == 'h')
 	{
 		fmt->varg_size = 'H';
 		fmt->i += 2;

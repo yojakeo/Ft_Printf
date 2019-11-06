@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 16:29:22 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/28 20:46:31 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/02 13:23:29 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <stdarg.h>
 # include <stdlib.h>
 # include <stdio.h>
-# include "../libftplus/libft.h"
+# include "libft.h"
 
 /*
 **	Structures
@@ -28,6 +28,7 @@ typedef	struct	s_format
 	size_t		i;
 	char		varg_size;
 	int			precision;
+	char		pre_flag;
 	int			width;
 	char		neg_flag;
 	char		pos_flag;
