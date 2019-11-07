@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 16:13:52 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/05 00:41:18 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/05 18:41:03 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,12 @@ static void			handle_flags(t_format *fmt, char *res, long long va_int)
 {
 	int	signpos;
 
-	// printf("Handling precalc...width: %i, precision: %i\n", fmt->width, fmt->precision);
 	if ((fmt->neg_flag && va_int < 0) || fmt->space_flag || fmt->pos_flag)
 		fmt->width++;
 	if (!fmt->neg_flag)
 		signpos = fmt->width - fmt->precision;
 	else
 		signpos = 0;
-	// printf("signpos: %i\n", signpos);
 	if ((fmt->pos_flag || fmt->space_flag) || va_int < 0)
 	{
 		if (va_int < 0)
@@ -75,7 +73,6 @@ static char			*format_int(t_format *fmt, long long va_int, int len)
 
 	fmt->width = (fmt->width < len) ? len : fmt->width;
 	fmt->precision = len;
-	// printf("format precalc pre: %i, width: %i, len: %i\n", fmt->precision, fmt->width, len);
 	if ((fmt->pos_flag || fmt->space_flag) || va_int < 0)
 	{
 		++fmt->precision;
@@ -96,7 +93,6 @@ static char			*format_int(t_format *fmt, long long va_int, int len)
 		ft_memset(res, ' ', (fmt->width - len) + 1);
 	if (res)
 		res[fmt->width - len] = '\0';
-	// printf("format calc aff: %i, width: %i, len: %i\n", fmt->precision, fmt->width, len);
 	return (res);
 }
 
@@ -106,7 +102,6 @@ static char			*handle_int(t_format *fmt, long long va_int, int *len)
 	char	*itoares;
 	char	*preres;
 
-	// printf("precalc pre: %i, Preflag: %i\n", fmt->precision, fmt->pre_flag);
 	if (fmt->pos_flag && fmt->space_flag)
 		fmt->space_flag = 0;
 	if (fmt->neg_flag && fmt->zero_flag)
@@ -154,7 +149,6 @@ char				*flag_int(t_format *fmt)
 
 	va_int = get_nb(fmt);
 	len = ft_intlen(va_int);
-	// printf("\nlen: %i\n", len);
 	itoares = handle_int(fmt, va_int, &len);
 	if ((fmt->neg_flag && va_int < 0) || fmt->space_flag || fmt->pos_flag)
 	{

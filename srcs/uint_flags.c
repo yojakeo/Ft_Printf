@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 21:23:37 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/02 14:46:06 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/05 19:16:17 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,10 @@ static char					*format_uint(t_format *fmt, int len)
 
 	fmt->width = (fmt->width < len) ? len : fmt->width;
 	fmt->precision = len;
-	if (fmt->pos_flag || fmt->space_flag)
-	{
-		++fmt->precision;
-		if (fmt->width == len)
-			++fmt->width;
-	}
-	if (fmt->zero_flag)
+	if (fmt->zero_flag && !fmt->pre_flag)
 		fmt->precision = fmt->width;
-	if (fmt->space_flag || fmt->pos_flag)
-		fmt->width--;
+	if (fmt->zero_flag && fmt->pre_flag)
+		fmt->zero_flag = 0;
 	if ((fmt->width - len) >= 1)
 		res = (char *)malloc(fmt->width - len);
 	else
@@ -81,7 +75,14 @@ static char					*handle_uint(t_format *fmt, \
 	char	*itoares;
 	char	*preres;
 
+	if (fmt->neg_flag && fmt->zero_flag)
+		fmt->zero_flag = 0;
 	itoares = ft_itoa_base(va_int, 10);
+	if (fmt->pre_flag && fmt->precision == 0)
+	{
+		*len = fmt->precision;
+		return (ft_strnew(0));
+	}
 	if (fmt->pre_flag && fmt->precision > *len)
 	{
 		preres = (char *)malloc((fmt->precision - *len) + 1);
