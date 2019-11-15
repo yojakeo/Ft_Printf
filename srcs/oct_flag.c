@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/20 02:04:35 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 21:03:09 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/09 14:22:01 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,39 +35,106 @@ static unsigned long long	get_nb(t_format *fmt)
 }
 
 /*
+**	Handles alternate flag.
+**	It applies the flag IF the there's enough space. This also helps with
+**	precision and len handling since it is always called at least once, usually
+**	twice.
+*/
+
+static char					*handle_alt(t_format *fmt, char *input, int *len, \
+							int fmt_flag)
+{
+	char		*res;
+	static int	hagate;
+
+	res = NULL;
+	if (!(fmt->zero_flag && !fmt_flag))
+	{
+		printf("Alt entry... Pre: %i, Len: %i\n", fmt->precision, *len);
+		if (!hagate && fmt->alt_flag)
+		{
+			if (fmt->precision < *len)
+				fmt->precision = *len;
+			fmt->precision += 1;
+			res = ft_strjoin("0", input);
+			hagate = 1;
+		}
+	}
+	if (fmt->precision > *len)
+		*len = fmt->precision;
+	if (res)
+		ft_strdel(&input);
+	else
+		res = input;
+	if (fmt_flag)
+		hagate = 0;
+	return (res);
+}
+
+/*
 **	Does the math to find the size of the string to allocate.
 **	Ensures that width is as wide or wider than the len of the number.
 **	Checks for needed additional space for pos and space flags.
 **	Creates the padding string with the proper set of chars with NULL.
 */
 
-static char					*format_oct(t_format *fmt, int len)
+static char					*format_oct(t_format *fmt, int *len)
 {
 	char *res;
 
-	fmt->width = (fmt->width < len) ? len : fmt->width;
-	fmt->precision = len;
-	if (fmt->pos_flag || fmt->space_flag)
-	{
-		++fmt->precision;
-		if (fmt->width == len)
-			++fmt->width;
-	}
-	if (fmt->zero_flag)
+	printf("\nfmt RAW... pre:%i, width:%i, len:%i\n", fmt->precision, fmt->width, *len);
+	fmt->width = (fmt->width < *len) ? *len : fmt->width;
+	fmt->precision = *len;
+	if (fmt->zero_flag && !fmt->pre_flag)
 		fmt->precision = fmt->width;
-	if (fmt->alt_flag)
+	printf("alt_flag: %i\n", fmt->alt_flag);
+	if (fmt->alt_flag && fmt->zero_flag)
 		fmt->width--;
-	if ((fmt->width - len) >= 1)
-		res = (char *)malloc(fmt->width - len);
+	printf("fmt affcalc... pre:%i, width:%i, *len:%i\n", fmt->precision, fmt->width, *len);
+	if ((fmt->width - *len) >= 1)
+		res = (char *)malloc(fmt->width - *len);
 	else
-		return (ft_strnew(0));
+		return (handle_alt(fmt, ft_strnew(0), len, 1));
 	if (res && fmt->zero_flag)
-		ft_memset(res, '0', (fmt->width - len) + 1);
+		ft_memset(res, '0', (fmt->width - *len) + 1);
 	else if (res)
-		ft_memset(res, ' ', (fmt->width - len) + 1);
+		ft_memset(res, ' ', (fmt->width - *len) + 1);
 	if (res)
-		res[fmt->width - len] = '\0';
-	return (res);
+		res[fmt->width - *len] = '\0';
+	return (handle_alt(fmt, res, len, 1));
+}
+
+/*
+**	Creates the number string and takes in precision to correctly size it.
+*/
+
+static char					*handle_oct(t_format *fmt, \
+							unsigned long long va_int, int *len)
+{
+	char	*res;
+	char	*itoares;
+	char	*preres;
+
+	if ((fmt->neg_flag || fmt->pre_flag) && fmt->zero_flag)
+		fmt->zero_flag = 0;
+	itoares = ft_itoa_base(va_int, 8);
+	if (fmt->pre_flag && fmt->precision == 0)
+	{
+		*len = 0;
+		return (ft_strnew(0));
+	}
+	if (fmt->pre_flag && fmt->precision > *len)
+	{
+		preres = (char *)malloc((fmt->precision - *len) + 1);
+		ft_memset(preres, '0', (fmt->precision - *len));
+		preres[fmt->precision - *len] = '\0';
+		res = ft_strjoin(preres, itoares);
+		ft_strdel(&preres);
+		ft_strdel(&itoares);
+	}
+	else
+		return (handle_alt(fmt, itoares, len, 0));
+	return (handle_alt(fmt, res, len, 0));
 }
 
 /*
@@ -92,14 +159,13 @@ char						*flag_oct(t_format *fmt)
 
 	va_int = get_nb(fmt);
 	len = ft_intlen_base(va_int, 8);
-	itoares = ft_itoa_base(va_int, 8);
-	if (fmt->alt_flag)
-	{
-		res = ft_strjoin("0", itoares);
-		ft_strdel(&itoares);
-		itoares = res;
-	}
-	formatres = format_oct(fmt, len);
+	printf("\nLen: %i\n", len);
+	if (fmt->pre_flag && fmt->alt_flag && fmt->precision != 0)
+		fmt->alt_flag = 0;
+	itoares = handle_oct(fmt, va_int, &len);
+	if (!fmt->pre_flag && !len)
+		len = ft_intlen_base(va_int, 16);
+	formatres = format_oct(fmt, &len);
 	if (!fmt->neg_flag)
 		res = ft_strjoin(formatres, itoares);
 	else

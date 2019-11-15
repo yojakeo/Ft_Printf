@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 16:20:39 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/06 21:02:46 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/14 18:09:04 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,19 @@ static char					*handle_alt(t_format *fmt, char *input, int *len, \
 	static int	hagate;
 
 	res = NULL;
-	if (!hagate && fmt->alt_flag && !(fmt->zero_flag && !fmt_flag))
+	if (!(fmt->zero_flag && !fmt_flag))
 	{
-		fmt->precision += 2;
-		res = ft_strjoin("0x", input);
-		hagate = 1;
+		if (!hagate && fmt->alt_flag)
+		{
+			if (fmt->precision < *len)
+				fmt->precision = *len;
+			fmt->precision += 2;
+			res = ft_strjoin("0x", input);
+			hagate = 1;
+		}
 	}
 	if (fmt->precision > *len)
-	*len = fmt->precision;
+		*len = fmt->precision;
 	if (res)
 		ft_strdel(&input);
 	else
@@ -76,19 +81,16 @@ static char					*format_hex(t_format *fmt, int *len)
 {
 	char *res;
 
-	// printf("\nfmt RAW... pre:%i, width:%i, len:%i\n", fmt->precision, fmt->width, *len);
 	fmt->width = (fmt->width < *len) ? *len : fmt->width;
 	fmt->precision = *len;
 	if (fmt->zero_flag && !fmt->pre_flag)
 		fmt->precision = fmt->width;
-	// printf("alt_flag: %i\n", fmt->alt_flag);
-	if (fmt->alt_flag)
+	if (fmt->alt_flag && fmt->zero_flag)
 		fmt->width -= 2;
-	// printf("fmt affcalc... pre:%i, width:%i, *len:%i\n", fmt->precision, fmt->width, *len);
 	if ((fmt->width - *len) >= 1)
 		res = (char *)malloc(fmt->width - *len);
 	else
-		return (ft_strnew(0));
+		return (handle_alt(fmt, ft_strnew(0), len, 1));
 	if (res && fmt->zero_flag)
 		ft_memset(res, '0', (fmt->width - *len) + 1);
 	else if (res)
@@ -153,7 +155,6 @@ char						*flag_hex(t_format *fmt)
 
 	va_int = get_nb(fmt);
 	len = ft_intlen_base(va_int, 16);
-	// printf("\nLen: %i\n", len);
 	if (fmt->alt_flag && va_int == 0)
 		fmt->alt_flag = 0;
 	itoares = handle_hex(fmt, va_int, &len);

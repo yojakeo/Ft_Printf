@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 19:37:40 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/02 15:44:17 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/14 17:59:26 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,17 @@ char			*flag_string(t_format *fmt)
 char			*flag_percent(t_format *fmt)
 {
 	char	*res;
+	char	*formatres;
 
-	(void)fmt->valst;
-	res = ft_strdup("%");
+	formatres = format_char(fmt, 1);
+	if (fmt->neg_flag && fmt->zero_flag)
+		fmt->zero_flag = 0;
+	if (fmt->zero_flag && formatres)
+		ft_memset(formatres, '0', (fmt->width - 1));
+	if (!fmt->neg_flag)
+		res = ft_strjoin(formatres, "%");
+	else
+		res = ft_strjoin("%", formatres);
+	ft_strdel(&formatres);
 	return (res);
 }
