@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/18 19:47:17 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/05 18:18:27 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/16 13:31:15 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ int			input_parser(t_format *fmt, t_obuf *buff)
 		fmt->precision = 6;
 	else if (fmt->precision == -1)
 		fmt->precision = 0;
+	if (!fmt->input[fmt->i])
+		return (-1);
 	if (join_buff(buff, table((int)fmt->input[fmt->i], fmt)) == -1)
 		return (-1);
 	fmt->i++;

@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/20 02:04:35 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/09 14:22:01 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/16 14:45:13 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ static char					*handle_alt(t_format *fmt, char *input, int *len, \
 	res = NULL;
 	if (!(fmt->zero_flag && !fmt_flag))
 	{
-		printf("Alt entry... Pre: %i, Len: %i\n", fmt->precision, *len);
 		if (!hagate && fmt->alt_flag)
 		{
 			if (fmt->precision < *len)
@@ -82,15 +81,14 @@ static char					*format_oct(t_format *fmt, int *len)
 {
 	char *res;
 
-	printf("\nfmt RAW... pre:%i, width:%i, len:%i\n", fmt->precision, fmt->width, *len);
+	if (fmt->pre_flag && fmt->precision == 0 && fmt->alt_flag)
+		*len = 1;
 	fmt->width = (fmt->width < *len) ? *len : fmt->width;
 	fmt->precision = *len;
 	if (fmt->zero_flag && !fmt->pre_flag)
 		fmt->precision = fmt->width;
-	printf("alt_flag: %i\n", fmt->alt_flag);
 	if (fmt->alt_flag && fmt->zero_flag)
 		fmt->width--;
-	printf("fmt affcalc... pre:%i, width:%i, *len:%i\n", fmt->precision, fmt->width, *len);
 	if ((fmt->width - *len) >= 1)
 		res = (char *)malloc(fmt->width - *len);
 	else
@@ -121,7 +119,7 @@ static char					*handle_oct(t_format *fmt, \
 	if (fmt->pre_flag && fmt->precision == 0)
 	{
 		*len = 0;
-		return (ft_strnew(0));
+		return (handle_alt(fmt, ft_strnew(0), len, 0));
 	}
 	if (fmt->pre_flag && fmt->precision > *len)
 	{
@@ -159,8 +157,8 @@ char						*flag_oct(t_format *fmt)
 
 	va_int = get_nb(fmt);
 	len = ft_intlen_base(va_int, 8);
-	printf("\nLen: %i\n", len);
-	if (fmt->pre_flag && fmt->alt_flag && fmt->precision != 0)
+	if ((fmt->pre_flag && fmt->precision > len) || \
+		(!va_int && !(fmt->pre_flag && !fmt->precision)))
 		fmt->alt_flag = 0;
 	itoares = handle_oct(fmt, va_int, &len);
 	if (!fmt->pre_flag && !len)
