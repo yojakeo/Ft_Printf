@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/18 19:47:17 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/16 13:31:15 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/16 17:33:01 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,16 @@ static void	find_size(t_format *fmt)
 		fmt->i++;
 }
 
+static void	handle_star(t_format *fmt, int state)
+{
+	if (state == 0)
+		fmt->width = va_arg(fmt->valst, int);
+	else
+		fmt->precision = va_arg(fmt->valst, int);
+	fmt->i++;
+
+}
+
 /*
 **	Grabs the precision and width from the input stream and places them into
 **	their proper variables.
@@ -51,7 +61,9 @@ static void	find_size(t_format *fmt)
 
 static void	precision_width(t_format *fmt)
 {
-	if (ft_isdigit(fmt->input[fmt->i]))
+	if (fmt->input[fmt->i] == '*')
+		handle_star(fmt, 0);
+	else if (ft_isdigit(fmt->input[fmt->i]))
 	{
 		fmt->width = ft_atoi(&fmt->input[fmt->i]);
 		while (ft_isdigit(fmt->input[fmt->i]))
@@ -61,7 +73,9 @@ static void	precision_width(t_format *fmt)
 	{
 		fmt->pre_flag = 1;
 		++fmt->i;
-		if (ft_isdigit(fmt->input[fmt->i]))
+		if (fmt->input[fmt->i] == '*')
+			handle_star(fmt, 1);
+		else if (ft_isdigit(fmt->input[fmt->i]))
 		{
 			fmt->precision = ft_atoi(&fmt->input[fmt->i]);
 			while (fmt->input[fmt->i] && ft_isdigit(fmt->input[fmt->i]))
