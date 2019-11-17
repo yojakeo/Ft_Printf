@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/14 04:35:34 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/16 13:14:56 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/16 17:56:46 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*table(int flag, t_format *fmt)
 	char	*key;
 	int		i;
 
-	key = "csp%idoufxXb";
+	key = "csp%idDoufFxXb";
 	i = -1;
 	while (key[++i] != flag)
 		if (!key[i])
@@ -34,9 +34,11 @@ char	*table(int flag, t_format *fmt)
 		['%'] = flag_percent,
 		['i'] = flag_int,
 		['d'] = flag_int,
+		['D'] = flag_uint,
 		['o'] = flag_oct,
 		['u'] = flag_uint,
 		['f'] = flag_float,
+		['F'] = flag_float,
 		['x'] = flag_hex,
 		['X'] = flag_hex,
 		['b'] = flag_binary,
