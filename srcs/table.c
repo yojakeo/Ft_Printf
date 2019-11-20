@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/14 04:35:34 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/16 17:56:46 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:59:17 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,6 @@
 
 char	*table(int flag, t_format *fmt)
 {
-	char	*key;
-	int		i;
-
-	key = "csp%idDoufFxXb";
-	i = -1;
-	while (key[++i] != flag)
-		if (!key[i])
-			return (ft_strnew(0));
 	static char	*(*p[])() = {
 		['c'] = flag_char,
 		['s'] = flag_string,
@@ -39,10 +31,25 @@ char	*table(int flag, t_format *fmt)
 		['u'] = flag_uint,
 		['f'] = flag_float,
 		['F'] = flag_float,
+		['a'] = flag_float,
+		['A'] = flag_float,
 		['x'] = flag_hex,
 		['X'] = flag_hex,
 		['b'] = flag_binary,
 	};
 
 	return (p[flag](fmt));
+}
+
+int		conversion_check(int flag)
+{
+	char	*key;
+	int		i;
+
+	key = "csp%idDoufFxXb";
+	i = -1;
+	while (key[++i] != flag)
+		if (!key[i])
+			return (0);
+	return (1);
 }

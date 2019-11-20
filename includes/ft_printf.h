@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 16:29:22 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/02 13:23:29 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:59:57 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef	struct	s_format
 	int			precision;
 	char		pre_flag;
 	int			width;
+	char		nc_flag;
 	char		neg_flag;
 	char		pos_flag;
 	char		space_flag;
@@ -56,6 +57,7 @@ int				ft_printf(const char *input, ...);
 **	Parsing
 */
 int				input_parser(t_format *fmt, t_obuf *buff);
+int				conversion_check(int flag);
 /*
 **	Dispatch Functions
 */
@@ -79,11 +81,13 @@ void			reset_flags(t_format *fmt);
 **	Floats
 */
 char			*ft_ftoa(long double input, int precision);
+char			*ft_ftoa_base(long double input, int precision, int base);
 /*
 **	Buffering
 */
 int				non_varg_format(t_format *format, t_obuf *buff);
 int				join_buff(t_obuf *buff, char *input);
+void			handle_nc(t_format *fmt, t_obuf *buff);
 #endif
 
 /*

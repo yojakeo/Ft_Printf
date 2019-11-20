@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/28 20:54:39 by japarbs           #+#    #+#             */
-/*   Updated: 2019/10/31 21:10:59 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:51:50 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,14 @@ static long double	get_nb(t_format *fmt)
 */
 
 static void			handle_flags(t_format *fmt, \
-					char *res, long long va_float, int len)
+					char *res, long long va_float)
 {
-	int signpos;
+	int	signpos;
 
+	if ((fmt->neg_flag && va_float < 0) || fmt->space_flag || fmt->pos_flag)
+		fmt->width++;
 	if (!fmt->neg_flag)
-		signpos = fmt->width - len;
+		signpos = fmt->width - fmt->precision;
 	else
 		signpos = 0;
 	if ((fmt->pos_flag || fmt->space_flag) || va_float < 0)
@@ -63,24 +65,42 @@ static char			*format_float(t_format *fmt, long long va_float, int len)
 	char *res;
 
 	fmt->width = (fmt->width < len) ? len : fmt->width;
+	fmt->precision = len;
 	if ((fmt->pos_flag || fmt->space_flag) || va_float < 0)
 	{
 		++fmt->precision;
 		if (fmt->width == len)
 			++fmt->width;
 	}
+	if (fmt->zero_flag && !fmt->pre_flag)
+		fmt->precision = fmt->width;
 	if ((fmt->neg_flag && va_float < 0) || fmt->space_flag || fmt->pos_flag)
 		fmt->width--;
 	if ((fmt->width - len) >= 1)
 		res = (char *)malloc(fmt->width - len);
 	else
 		return (ft_strnew(0));
-	if (res && fmt->zero_flag)
+	if (res && fmt->zero_flag && !fmt->pre_flag)
 		ft_memset(res, '0', (fmt->width - len) + 1);
 	else if (res)
 		ft_memset(res, ' ', (fmt->width - len) + 1);
 	if (res)
 		res[fmt->width - len] = '\0';
+	return (res);
+}
+
+static char			*handle_float(t_format *fmt, long double va_float)
+{
+	char	*res;
+	char	*ftoares;
+
+	if (fmt->pos_flag && fmt->space_flag)
+		fmt->space_flag = 0;
+	if (fmt->neg_flag && fmt->zero_flag)
+		fmt->zero_flag = 0;
+	ftoares = (va_float < 0) ? \
+	ft_ftoa(-va_float, fmt->precision) : ft_ftoa(va_float, fmt->precision);
+	res = ftoares;
 	return (res);
 }
 
@@ -106,10 +126,8 @@ char				*flag_float(t_format *fmt)
 
 	va_float = get_nb(fmt);
 	len = ft_intlen((long long)va_float) + fmt->precision;
-	if (fmt->precision)
-		++len;
-	floatres = (va_float < 0) ? \
-	ft_ftoa(-va_float, fmt->precision) : ft_ftoa(va_float, fmt->precision);
+	len += (fmt->precision) ? 1 : 0;
+	floatres = handle_float(fmt, va_float);
 	if ((fmt->neg_flag && va_float < 0) || fmt->space_flag || fmt->pos_flag)
 	{
 		res = ft_strjoin("0", floatres);
@@ -121,6 +139,6 @@ char				*flag_float(t_format *fmt)
 	ft_strjoin(formatres, floatres) : ft_strjoin(floatres, formatres);
 	ft_strdel(&formatres);
 	ft_strdel(&floatres);
-	handle_flags(fmt, res, va_float, len);
+	handle_flags(fmt, res, va_float);
 	return (res);
 }

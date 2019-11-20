@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/09 01:29:22 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/01 18:13:50 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:57:16 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 **	Trims the string from one index to another. Returning a new string
 **	the chars in and between those indexes.
 */
+
 char	*ft_strcut(char const *str, size_t start, size_t end)
 {
 	size_t		len;

@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 16:20:39 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/14 18:09:04 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:52:38 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ static char					*handle_hex(t_format *fmt, \
 	char	*res;
 	char	*itoares;
 	char	*preres;
- 
+
 	if ((fmt->neg_flag || fmt->pre_flag) && fmt->zero_flag)
 		fmt->zero_flag = 0;
 	itoares = ft_itoa_base(va_int, 16);

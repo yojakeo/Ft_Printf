@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 00:15:27 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/01 18:13:51 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:57:18 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 void	ft_strclr(char *s)
 {
-	if (!s) 
+	if (!s)
 		return ;
 	ft_memset(s, '\0', (size_t)ft_strlen(s));
 }

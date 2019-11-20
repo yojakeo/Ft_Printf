@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/05 18:55:54 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/02 13:30:07 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:47:03 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,29 @@ int		ft_printf(const char *input, ...)
 		if ((intres = input_parser(&fmt, &buff)) == -1)
 			return (-1);
 	}
+	handle_nc(&fmt, &buff);
 	write(1, buff.stream, buff.len);
 	ft_strdel(&buff.stream);
 	va_end(fmt.valst);
 	return (buff.len);
+}
+
+/*
+**	Handles NULL char output if there was a NULL char passed though for %c
+**	consersion handling.
+*/
+
+void	handle_nc(t_format *fmt, t_obuf *buff)
+{
+	int i;
+
+	if (fmt->nc_flag)
+	{
+		i = buff->len;
+		while (--i >= 0)
+			if (buff->stream[i] == -1)
+				buff->stream[i] = '\0';
+	}
 }
 
 /*
@@ -68,44 +87,5 @@ void	printf_init(t_format *fmt, t_obuf *buff, const char *input)
 	reset_flags(fmt);
 	buff->stream = ft_strnew(0);
 	buff->len = 0;
-}
-
-/*
-**	Takes non-varg inputs within the fmt string and pushes them into
-**	the buffer to be printed with varg inputs. It also moves the index
-**	to the next '%' char to be processed later on by the input_parser function.
-*/
-
-int		non_varg_format(t_format *fmt, t_obuf *buff)
-{
-	char	*res;
-	size_t	sublen;
-
-	if (fmt->input[fmt->i] && fmt->input[fmt->i] != '%')
-	{
-		sublen = ft_strdlen(&fmt->input[fmt->i], '%');
-		if (!(res = ft_strsub(fmt->input, fmt->i, sublen))
-		|| !join_buff(buff, res))
-			return (-1);
-		fmt->i += sublen;
-	}
-	return (1);
-}
-
-/*
-**	Takes an input and joins that to the buffer. Deleting the input.
-**	This function will always receive a allocated string.
-*/
-
-int		join_buff(t_obuf *buff, char *input)
-{
-	char *tmp;
-
-	if (!input || !(tmp = ft_strjoin(buff->stream, input)))
-		return (-1);
-	ft_strdel(&buff->stream);
-	buff->stream = tmp;
-	ft_strdel(&input);
-	buff->len = ft_strlen(buff->stream);
-	return (1);
+	fmt->nc_flag = 0;
 }

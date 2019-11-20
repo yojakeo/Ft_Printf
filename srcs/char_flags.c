@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 19:37:40 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/16 16:47:32 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:09:08 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,19 @@ static char		*handle_string(t_format *fmt, char *va_str, int *len)
 char			*flag_char(t_format *fmt)
 {
 	char	*res;
-	char	charstr[3];
+	char	charstr[2];
 	char	va_char;
 	char	*formatres;
 
-	ft_memset(charstr, 0, 3);
+	ft_memset(charstr, 0, 2);
 	va_char = va_arg(fmt->valst, int);
-	if (va_char)
-		charstr[0] = (char)va_char;
+	if (!va_char)
+	{
+		fmt->nc_flag = 1;
+		charstr[0] = -1;
+	}
 	else
-		ft_strcpy(charstr, "^@");
+		charstr[0] = (char)va_char;
 	formatres = format_char(fmt, 1);
 	if (!fmt->neg_flag)
 		res = ft_strjoin(formatres, charstr);

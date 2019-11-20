@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 16:13:52 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/05 18:41:03 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:52:14 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,9 @@ static char			*handle_int(t_format *fmt, long long va_int, int *len)
 	if (fmt->neg_flag && fmt->zero_flag)
 		fmt->zero_flag = 0;
 	itoares = (va_int < 0) ? ft_itoa(-va_int) : ft_itoa(va_int);
-	if (fmt->pre_flag && fmt->precision == 0)
-	{
-		*len = fmt->precision;
+	*len = (fmt->pre_flag && !fmt->precision) ? fmt->precision : *len;
+	if (fmt->pre_flag && !fmt->precision)
 		return (ft_strnew(0));
-	}
 	if (fmt->pre_flag && fmt->precision > *len)
 	{
 		preres = (char *)malloc((fmt->precision - *len) + 1);

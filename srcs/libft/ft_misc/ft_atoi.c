@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/29 12:32:35 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/01 18:13:57 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 20:57:22 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 **	or sign is reached. if '-' s (sign) is set to -1. if '+' it is passed over.
 **	While the current index is numeric the previous result is multiplied by 10
 **	and the current index is added to the int. Once the index is no longer
-**	numeric the result is returned.	
+**	numeric the result is returned.
 */
 
 int		ft_atoi(const char *str)
