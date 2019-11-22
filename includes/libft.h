@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/13 18:48:11 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/01 18:16:08 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/21 17:22:23 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@
 **	Macros
 */
 # define IF_RET(in, re) if (in) return (re);
-# define ERROR(msg, r) {ft_putendl(msg); return(r);} 
+# define ERROR(msg, r) {ft_putendl(msg); return(r);}
+
 /*
 **	Structs & Lists
 */

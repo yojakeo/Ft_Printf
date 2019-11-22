@@ -6,7 +6,7 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/14 04:35:34 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/19 20:59:17 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/19 21:08:12 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ char	*table(int flag, t_format *fmt)
 		['u'] = flag_uint,
 		['f'] = flag_float,
 		['F'] = flag_float,
-		['a'] = flag_float,
-		['A'] = flag_float,
 		['x'] = flag_hex,
 		['X'] = flag_hex,
 		['b'] = flag_binary,

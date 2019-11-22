@@ -6,11 +6,11 @@
 /*   By: japarbs <japarbs@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/23 22:26:39 by japarbs           #+#    #+#             */
-/*   Updated: 2019/11/19 20:36:08 by japarbs          ###   ########.fr       */
+/*   Updated: 2019/11/21 17:33:07 by japarbs          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/ft_printf.h"
+#include "../includes/ft_ftoa.h"
 
 /*
 **	Takes a number and brings it up to a given power.
@@ -28,6 +28,10 @@ long		ft_pow(int a, int b)
 	}
 	return (power);
 }
+
+/*
+**	Counts the ammount of leading zeros of a float.
+*/
 
 int			count_zeros(double fnum, int precision)
 {
@@ -49,19 +53,21 @@ int			count_zeros(double fnum, int precision)
 	return (count);
 }
 
-static char	*make_float(char *ires, long double fnum, int precision, int base)
+/*
+**	Joins each part of the float together.
+*/
+
+static char	*make_float(char *ires, t_ftftoa *fmt)
 {
 	char	*res;
 	char	*fres;
-	int		zeros;
 
-	zeros = count_zeros(fnum, precision);
-	fres = ft_itoa_base((unsigned long long)fnum, base);
-	res = ft_strnew(ft_strlen(ires) + ft_strlen(fres) + zeros + 1);
+	fres = ft_itoa_base((unsigned long long)fmt->fnum, fmt->base);
+	res = ft_strnew(ft_strlen(ires) + ft_strlen(fres) + fmt->zeros + 1);
 	ft_strcat(res, ires);
 	ft_strcat(res, ".");
-	if (zeros)
-		ft_memset(&res[ft_strlen(res)], '0', zeros);
+	if (fmt->zeros)
+		ft_memset(&res[ft_strlen(res)], '0', fmt->zeros);
 	ft_strcat(res, fres);
 	ft_strdel(&fres);
 	return (res);
@@ -76,18 +82,20 @@ static char	*make_float(char *ires, long double fnum, int precision, int base)
 
 char		*ft_ftoa_base(long double input, int precision, int base)
 {
-	char				*res;
-	char				*ires;
-	unsigned long long	inum;
-	long double			fnum;
+	char		*ires;
+	char		*res;
+	t_ftftoa	fmt;
 
-	inum = (long long)input;
-	ires = ft_itoa_base(inum, base);
+	fmt.precision = precision;
+	fmt.base = base;
+	fmt.inum = (long long)input;
+	ires = ft_itoa_base(fmt.inum, base);
 	if (precision)
 	{
-		fnum = (input - (long double)inum);
-		fnum *= ft_pow(10, precision);
-		res = make_float(ires, fnum, precision, base);
+		fmt.fnum = (input - (long double)fmt.inum);
+		fmt.zeros = count_zeros(fmt.fnum, fmt.precision);
+		fmt.fnum *= ft_pow(10, precision);
+		res = make_float(ires, &fmt);
 	}
 	else
 		res = ft_strdup(ires);
